@@ -14,6 +14,11 @@ const outcomes: Outcome[] = [
   { id: 203, title: 'Pricing comparisons, made easier', summary: 'An interactive calculator helps visitors compare Slack and Zedu pricing.', category: 'New feature', time: 'Example outcome', type: 'calculator' },
 ];
 const storageKey = 'ziki-demo-decisions-v1';
+const feedbackSuggestions = [
+  'Keep the introduction. Reduce the spacing between fields instead.',
+  'Keep buttons and fields large enough to tap comfortably.',
+  'Show an alternative layout before I approve the design.',
+];
 function readSaved(): DecisionRecord[] {
   try { const saved: unknown = JSON.parse(localStorage.getItem(storageKey) ?? '[]'); return Array.isArray(saved) ? saved.filter((item): item is DecisionRecord => typeof item === 'object' && item !== null && 'id' in item && typeof item.id === 'number' && 'action' in item && typeof item.action === 'string') : []; } catch { return []; }
 }
@@ -62,6 +67,27 @@ export default function App() {
       <footer className="page-footer"><span>Demo content based on your Ziki screenshots. No live agents or API connection.</span><button onClick={() => { setRecords([]); setFilter('overview'); setToast('Demo reset. Both decisions are available again.'); }}><RotateCcw size={12}/>Reset demo</button></footer>
     </main>
     {toast && <div className="toast" role="status"><CircleCheck size={18}/><span>{toast}</span><button aria-label="Dismiss notification" onClick={() => setToast('')}><X size={16}/></button></div>}
-    <dialog ref={dialogRef} className="feedback-dialog" onCancel={event => { event.preventDefault(); closeDialog(); }} onClick={event => { if (event.target === event.currentTarget) closeDialog(); }} aria-labelledby="feedback-title"><form onSubmit={submitFeedback}><div className="dialog-heading"><span className="type-label"><MessageSquare size={16}/> Design feedback</span><button type="button" className="icon-button" aria-label="Close feedback" onClick={closeDialog}><X size={19}/></button></div><h2 id="feedback-title">What would you change?</h2><p>Give your agent a clear direction for issue #{dialog?.id}.</p><label htmlFor="feedback">Your feedback</label><textarea autoFocus id="feedback" value={feedback} onChange={event => setFeedback(event.target.value)} placeholder="For example, keep the introduction and reduce spacing between fields instead…" required maxLength={2000}/><span className="input-note">Saved locally in this demo. Nothing is sent to Ziki.</span><div className="dialog-actions"><button type="button" className="button secondary" onClick={closeDialog}><ArrowLeft size={14}/>Cancel</button><button className="button primary" type="submit" disabled={!feedback.trim()}>Send feedback <ArrowDown size={14}/></button></div></form></dialog>
+    <dialog ref={dialogRef} className="feedback-dialog" onCancel={event => { event.preventDefault(); closeDialog(); }} onClick={event => { if (event.target === event.currentTarget) closeDialog(); }} aria-labelledby="feedback-title">
+      <form onSubmit={submitFeedback}>
+        <div className="dialog-heading"><span className="type-label"><MessageSquare size={16}/> Design feedback</span><button type="button" className="icon-button" aria-label="Close feedback" onClick={closeDialog}><X size={19}/></button></div>
+        <h2 id="feedback-title">What would you change?</h2>
+        <p>Choose a suggestion or write your own for issue #{dialog?.id}.</p>
+        <div className="suggestions-heading"><Sparkles size={15}/><span>Quick suggestions</span></div>
+        <p className="suggestions-hint">Click a suggestion to send it immediately.</p>
+        <div className="feedback-suggestions" aria-label="Send a suggested change">
+          {feedbackSuggestions.map(suggestion => <button type="button" key={suggestion} className="suggestion-button" aria-label={`Send suggestion: ${suggestion}`} onClick={() => { if (dialog) record(dialog, 'Changes requested', suggestion); }}><span>{suggestion}</span><ArrowRight size={17}/></button>)}
+        </div>
+        <details className="custom-feedback" key={dialog?.id ?? 'closed'}>
+          <summary><MessageSquare size={15}/> Customise message <ChevronDown size={15}/></summary>
+          <div className="custom-feedback-content">
+            <label htmlFor="feedback">Your message</label>
+            <textarea id="feedback" value={feedback} onChange={event => setFeedback(event.target.value)} placeholder="Tell your agent what you’d like to change…" required maxLength={2000}/>
+            <div className="custom-send"><button className="button primary" type="submit" disabled={!feedback.trim()}>Send custom message <ArrowDown size={14}/></button></div>
+          </div>
+        </details>
+        <span className="input-note">Saved locally in this demo. Nothing is sent to Ziki.</span>
+        <div className="dialog-actions"><button type="button" className="button secondary" onClick={closeDialog}><ArrowLeft size={14}/>Cancel</button></div>
+      </form>
+    </dialog>
   </div>;
 }
