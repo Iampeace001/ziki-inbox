@@ -124,4 +124,29 @@
 [data-theme="light"] .form-mini.before>span{color:#526c90;outline-color:#829abd;background:transparent}
 @media(max-width:680px){.account{gap:10px}.theme-toggle{padding:10px;font-size:11px;gap:6px}.topbar-inner{gap:12px}.workspace{gap:6px}.nav-divider{display:none}}
 @media(max-width:370px){.account .avatar{display:none}}
+.breadcrumbs .inbox-label{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border:1px solid #679cf6;border-radius:8px;background:linear-gradient(135deg,#234b84,#173156);color:#ecf4ff;font-size:13px;font-weight:650;box-shadow:0 0 0 3px #528fff0b,0 3px 14px #2367d51a}
+.breadcrumbs .inbox-label svg{color:#a3c8ff}
+[data-theme="light"] .breadcrumbs .inbox-label{background:linear-gradient(135deg,#e1edff,#f0f6ff);border-color:#5684cf;color:#204f98;box-shadow:0 0 0 3px #528fff0a,0 3px 12px #2367d510}
+[data-theme="light"] .breadcrumbs .inbox-label svg{color:#3269c1}
+/* Give task context and the requested decision room to be read comfortably. */
+.decision-card .decision-summary{font-size:16px;line-height:1.8;max-width:none;min-height:0;color:#b7c9e5}
+.decision-card h3{font-size:21px;line-height:1.4}
+.decision-card .type-label{font-size:12px;line-height:1.5}
+.decision-card .issue-number{font-size:12px}
+.decision-card .estimate{font-size:12px;line-height:1.7}
+.your-call{padding:16px 17px;margin-top:22px}
+.your-call>span{display:flex;align-items:center;gap:8px;font-size:12px;line-height:1.5;font-weight:650;letter-spacing:.7px;color:#c8dcff}
+.your-call>span svg{color:#ffc56c}
+.your-call p{font-size:15px;line-height:1.75;margin-top:8px;color:#bed0ec}
+.decision-card .comparison summary{font-size:14px}
+.decision-card .comparison-content>p,.task-proposal{font-size:14px;line-height:1.8}
+[data-theme="light"] .decision-card .decision-summary{color:#506681}
+[data-theme="light"] .your-call>span svg{color:#9d5a05}
+@media(max-width:680px){.decision-card h3{font-size:20px}.decision-card .decision-summary{font-size:15px}.your-call p{font-size:15px}.decision-card .type-label{font-size:11px}.card-top{align-items:flex-start}.your-call{padding:15px}}
+/* Current Inbox location with the number of outstanding human decisions. */
+.breadcrumbs .inbox-label,[data-theme="light"] .breadcrumbs .inbox-label{display:inline-flex;align-items:center;gap:9px;min-height:46px;padding:10px 15px;background:#2e6dec;border:1px solid #3978f7;border-radius:13px;color:#fff;font-size:16px;line-height:1.3;font-weight:650;box-shadow:none;letter-spacing:-.2px}
+.breadcrumbs .inbox-label>svg,[data-theme="light"] .breadcrumbs .inbox-label>svg{color:#fff}
+.breadcrumbs .inbox-label>svg{width:19px;height:19px}
+.breadcrumbs .inbox-label .inbox-attention-count{display:inline-grid;place-items:center;min-width:23px;height:23px;padding:0 6px;border-radius:50px;background:#ffffff30;color:#fff;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:0}
+@media(max-width:680px){.breadcrumbs .inbox-label,[data-theme="light"] .breadcrumbs .inbox-label{min-height:44px;padding:9px 13px;font-size:15px;gap:8px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
