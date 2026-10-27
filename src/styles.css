@@ -50,6 +50,8 @@
 .custom-feedback-content{padding-top:16px}
 .custom-send{display:flex;justify-content:flex-end;margin-top:12px}
 .feedback-dialog .dialog-actions{margin-top:16px}
+.task-proposal{white-space:pre-line;font-size:12px;line-height:1.8;color:#b3c6e4;background:#0c172a;border:1px solid #324968;border-radius:8px;padding:14px;margin-top:12px}
+[data-theme="light"] .task-proposal{color:#355478;background:#f1f6ff;border-color:#b7cce8}
 :root{color-scheme:dark}
 .theme-toggle{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 12px;background:#1b3152;border:1px solid #607fa9;border-radius:8px;color:#e0ecff;font-size:12px;font-weight:550;white-space:nowrap}
 .theme-toggle:hover{background:#304e75;border-color:#a2c3f3}
