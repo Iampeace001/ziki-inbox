@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
-import { ArrowDown, ArrowLeft, ArrowRight, Check, CheckCheck, ChevronDown, ChevronRight, CircleCheck, CircleDot, Clock3, ExternalLink, LayoutGrid, LoaderCircle, MessageSquare, RotateCcw, ShieldCheck, Sparkles, X, Zap } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowRight, Check, CheckCheck, ChevronDown, ChevronRight, CircleCheck, CircleDot, Clock3, ExternalLink, LayoutGrid, LoaderCircle, MessageSquare, Moon, RotateCcw, ShieldCheck, Sparkles, Sun, X, Zap } from 'lucide-react';
 
 type Decision = { id: number; kind: 'design' | 'authorization'; title: string; summary: string; request: string; primary: string; secondary: string; estimate?: string };
 type DecisionRecord = { id: number; action: string; feedback?: string };
@@ -30,6 +30,7 @@ function OutcomePreview({ type }: { type: Outcome['type'] }) {
 }
 
 export default function App() {
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
   const [records, setRecords] = useState<DecisionRecord[]>(readSaved);
   const [filter, setFilter] = useState<'overview' | 'decisions' | 'completed'>('overview');
   const [dialog, setDialog] = useState<Decision | null>(null);
@@ -38,6 +39,11 @@ export default function App() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const dialogTrigger = useRef<HTMLElement | null>(null);
   const pending = decisions.filter(decision => !records.some(record => record.id === decision.id));
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#080f20' : '#f4f7fc');
+    try { localStorage.setItem('ziki-theme', theme); } catch { /* Keep the switch working without storage. */ }
+  }, [theme]);
   useEffect(() => { try { localStorage.setItem(storageKey, JSON.stringify(records)); } catch { /* The preview still works when storage is unavailable. */ } }, [records]);
   useEffect(() => { if (!toast) return; const timer = window.setTimeout(() => setToast(''), 6500); return () => window.clearTimeout(timer); }, [toast]);
   useEffect(() => { if (dialog && !dialogRef.current?.open) dialogRef.current?.showModal(); }, [dialog]);
@@ -53,7 +59,7 @@ export default function App() {
   const showCompleted = filter !== 'decisions';
 
   return <div className="app">
-    <header className="topbar"><div className="topbar-inner"><Brand/><span className="nav-divider"/><span className="workspace">Zedu <ChevronDown size={14}/></span><nav className="main-nav" aria-label="Workspace"><span className="active"><CircleDot size={16}/> Product</span><span><ShieldCheck size={16}/> Workspace</span></nav><div className="account"><span className="workspace-label">YOUR WORKSPACE</span><span className="avatar" aria-label="Abdulmuiz">AA</span></div></div></header>
+    <header className="topbar"><div className="topbar-inner"><Brand/><span className="nav-divider"/><span className="workspace">Zedu <ChevronDown size={14}/></span><nav className="main-nav" aria-label="Workspace"><span className="active"><CircleDot size={16}/> Product</span><span><ShieldCheck size={16}/> Workspace</span></nav><div className="account"><button type="button" className="theme-toggle" onClick={() => setTheme(current => current === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>{theme === 'dark' ? <Sun size={17}/> : <Moon size={17}/>}<span>{theme === 'dark' ? 'Light mode' : 'Dark mode'}</span></button><span className="avatar" aria-label="Abdulmuiz">AA</span></div></div></header>
     <main>
       <div className="breadcrumbs"><span>Product</span><ChevronRight size={13}/><span>Inbox</span></div>
       <div className="page-heading"><div><div className="eyebrow"><span className="live-dot"/> YOUR AGENTS, AT A GLANCE</div><h1>Results &amp; decisions<span className="heading-dot">.</span></h1><p>{pending.length > 0 ? 'Your agents did the work. Here’s what needs you.' : 'You’re all caught up. Your agents will take it from here.'}</p></div><span className="demo-badge"><span/> Interactive demo</span></div>
