@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import ProfileMenu from './ProfileMenu';
+import { useTheme } from './useTheme';
 import type { FormEvent } from 'react';
 import { Inbox, CircleAlert, ArrowDown, ArrowLeft, ArrowRight, Check, CheckCheck, ChevronDown, ChevronRight, CircleCheck, CircleDot, Clock3, ExternalLink, LayoutGrid, LoaderCircle, MessageSquare, Moon, RotateCcw, ShieldCheck, Sparkles, Sun, X, Zap } from 'lucide-react';
 
@@ -6,14 +8,14 @@ type Decision = { id: number; section: 'Product' | 'Marketing' | 'Security'; kin
 type DecisionRecord = { id: number; action: string; feedback?: string };
 type Outcome = { id: number; title: string; summary: string; category: string; time: string; type: 'cta' | 'calculator' };
 const decisions: Decision[] = [
-  { id: 107, section: 'Product', kind: 'design', title: 'A sign-up form that fits the window', summary: 'A more compact layout keeps every field and the sign-up button visible. No scrolling needed.', request: 'Approve the proposed layout before implementation.', primary: 'Approve layout', secondary: 'Request changes' },
-  { id: 148, section: 'Product', kind: 'authorization', title: 'Fix the broken Facebook link', summary: 'The footer sends visitors to an unavailable page. Your agent is ready to propose a correction.', request: 'Allow your agent to submit a bid for this fix.', primary: 'Allow bid', secondary: 'Skip issue', estimate: '15 min estimated', scope: 'Footer link only' },
-  { id: 204, section: 'Marketing', kind: 'review', title: 'A clearer message for the next launch', summary: 'Your agent drafted a shorter launch email that leads with the customer benefit and one clear call to action.', request: 'Approve the copy for handoff. Publishing stays a separate step.', primary: 'Approve copy', secondary: 'Request changes', proposal: 'Subject: Less busywork. More progress.\n\nLet Zedu bring your team’s conversations and work together. Spend less time switching tools and more time moving forward.\n\nCall to action: Explore Zedu\n\nIllustrative draft. Approval does not send or publish this email.', suggestions: ['Make the message shorter and focus on one benefit.', 'Use a warmer, more conversational tone.', 'Replace the call to action with “Try Zedu free”.'] },
-  { id: 205, section: 'Security', kind: 'review', title: 'Warn people before their session expires', summary: 'Your agent recommends a clear warning before an inactive session ends, so people can save their work or stay signed in.', request: 'Approve the warning design before implementation. Session rules stay unchanged.', primary: 'Approve warning', secondary: 'Request changes', proposal: 'Heading: Your session is about to expire\n\nMessage: Save your work or choose “Stay signed in” to continue.\n\nActions: Stay signed in / Sign out\n\nIllustrative proposal. The existing session timeout policy is unchanged.', suggestions: ['Make the warning easier to notice without blocking the page.', 'Explain clearly whether unsaved work will be lost.', 'Show a countdown alongside the warning.'] },
+  { id: 107, section: 'Product', kind: 'design', title: 'Sign-up without scrolling', summary: 'All fields and the sign-up button fit on screen.', request: 'Approve this layout?', primary: 'Approve layout', secondary: 'Request changes' },
+  { id: 148, section: 'Product', kind: 'authorization', title: 'Fix the Facebook link', summary: 'The footer link is broken. A fix is proposed.', request: 'Allow a bid for this fix?', primary: 'Allow bid', secondary: 'Skip issue', estimate: 'Est. 15 min', scope: 'Footer link' },
+  { id: 204, section: 'Marketing', kind: 'review', title: 'Clearer launch email', summary: 'Shorter copy with one clear call to action.', request: 'Approve the draft? This won’t publish it.', primary: 'Approve copy', secondary: 'Request changes', proposal: 'Subject: Less busywork. More progress.\n\nLet Zedu bring your team’s conversations and work together. Spend less time switching tools and more time moving forward.\n\nCall to action: Explore Zedu\n\nIllustrative draft. Approval does not send or publish this email.', suggestions: ['Make the message shorter and focus on one benefit.', 'Use a warmer, more conversational tone.', 'Replace the call to action with “Try Zedu free”.'] },
+  { id: 205, section: 'Security', kind: 'review', title: 'Session-expiry warning', summary: 'Warn users before sign-out to help prevent lost work.', request: 'Approve the warning? Same timeout rules.', primary: 'Approve warning', secondary: 'Request changes', proposal: 'Heading: Your session is about to expire\n\nMessage: Save your work or choose “Stay signed in” to continue.\n\nActions: Stay signed in / Sign out\n\nIllustrative proposal. The existing session timeout policy is unchanged.', suggestions: ['Make the warning easier to notice without blocking the page.', 'Explain clearly whether unsaved work will be lost.', 'Show a countdown alongside the warning.'] },
 ];
 const outcomes: Outcome[] = [
-  { id: 199, title: 'The CTA arrow is on the right side', summary: '“Get started for free” now has the arrow in its intended position.', category: 'UI improvement', time: 'Example outcome', type: 'cta' },
-  { id: 203, title: 'Pricing comparisons, made easier', summary: 'An interactive calculator helps visitors compare Slack and Zedu pricing.', category: 'New feature', time: 'Example outcome', type: 'calculator' },
+  { id: 199, title: 'CTA arrow corrected', summary: 'The button arrow is now correctly placed.', category: 'UI improvement', time: 'Example outcome', type: 'cta' },
+  { id: 203, title: 'Pricing calculator delivered', summary: 'Visitors can compare Slack and Zedu pricing.', category: 'New feature', time: 'Example outcome', type: 'calculator' },
 ];
 const storageKey = 'ziki-demo-decisions-v1';
 const feedbackSuggestions = [
@@ -32,7 +34,8 @@ function OutcomePreview({ type }: { type: Outcome['type'] }) {
 }
 
 export default function App() {
-  const [theme, setTheme] = useState<'dark' | 'light'>(() => document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+  const { theme, mode, setMode, toggleTheme } = useTheme();
+  const [signedOut, setSignedOut] = useState(false);
   const [records, setRecords] = useState<DecisionRecord[]>(readSaved);
   const [filter, setFilter] = useState<'overview' | 'decisions' | 'completed'>('overview');
   const [dialog, setDialog] = useState<Decision | null>(null);
@@ -41,11 +44,6 @@ export default function App() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const dialogTrigger = useRef<HTMLElement | null>(null);
   const pending = decisions.filter(decision => !records.some(record => record.id === decision.id));
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#080f20' : '#f4f7fc');
-    try { localStorage.setItem('ziki-theme', theme); } catch { /* Keep the switch working without storage. */ }
-  }, [theme]);
   useEffect(() => { try { localStorage.setItem(storageKey, JSON.stringify(records)); } catch { /* The preview still works when storage is unavailable. */ } }, [records]);
   useEffect(() => { if (!toast) return; const timer = window.setTimeout(() => setToast(''), 6500); return () => window.clearTimeout(timer); }, [toast]);
   useEffect(() => { if (dialog && !dialogRef.current?.open) dialogRef.current?.showModal(); }, [dialog]);
@@ -60,8 +58,10 @@ export default function App() {
   const showDecisions = filter !== 'completed';
   const showCompleted = filter !== 'decisions';
 
+  if (signedOut) return <div className="demo-signout"><Brand/><h1>You’re signed out of the demo.</h1><p>Your saved tasks and photo stay in this browser. No Ziki account was signed out.</p><button className="button primary" onClick={() => setSignedOut(false)}>Return to demo <ArrowRight size={16}/></button></div>;
+
   return <div className="app">
-    <header className="topbar"><div className="topbar-inner"><Brand/><span className="nav-divider"/><span className="workspace">Zedu <ChevronDown size={14}/></span><nav className="main-nav" aria-label="Workspace"><span className="active"><CircleDot size={16}/> Product</span><span><ShieldCheck size={16}/> Workspace</span></nav><div className="account"><button type="button" className="theme-toggle" onClick={() => setTheme(current => current === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>{theme === 'dark' ? <Sun size={17}/> : <Moon size={17}/>}<span>{theme === 'dark' ? 'Light mode' : 'Dark mode'}</span></button><span className="avatar" aria-label="Abdulmuiz">AA</span></div></div></header>
+    <header className="topbar"><div className="topbar-inner"><Brand/><span className="nav-divider"/><span className="workspace">Zedu <ChevronDown size={14}/></span><nav className="main-nav" aria-label="Workspace"><span className="active"><CircleDot size={16}/> Product</span><span><ShieldCheck size={16}/> Workspace</span></nav><div className="account"><button type="button" className="theme-toggle" onClick={toggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>{theme === 'dark' ? <Sun size={17}/> : <Moon size={17}/>}<span>{theme === 'dark' ? 'Light mode' : 'Dark mode'}</span></button><ProfileMenu mode={mode} onSelectTheme={setMode} records={records} onNotify={setToast} onSignOut={() => setSignedOut(true)}/></div></div></header>
     <main>
       <div className="inbox-heading"><div className="breadcrumbs"><span>Workspace</span><ChevronRight size={13}/><span className="inbox-label" aria-current="page"><Inbox size={21} aria-hidden="true"/><span>Inbox</span><span className="inbox-attention-count" aria-label={`${pending.length} tasks need your attention`} aria-live="polite" aria-atomic="true">{pending.length}</span></span></div>
       <div className="page-heading"><div><div className="eyebrow"><span className="live-dot"/> YOUR AGENTS, AT A GLANCE</div><h1>Results &amp; decisions<span className="heading-dot">.</span></h1><p>{pending.length > 0 ? 'Your agents did the work. Here’s what needs you.' : 'You’re all caught up. Your agents will take it from here.'}</p></div><span className="demo-badge"><span/> Interactive demo</span></div></div>
