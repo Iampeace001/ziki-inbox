@@ -347,4 +347,5 @@
 .proposal-source:hover{background:#2b4b78;border-color:#a2c3f5;color:#fff}
 [data-theme="light"] .proposal-source{background:#e7effc;border-color:#97b3dd;color:#2355a0}
 [data-theme="light"] .proposal-source:hover{background:#d3e3fc;border-color:#5480c2}
+.theme-toggle.theme-icon-toggle{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-width:44px;padding:10px;border-radius:50%;flex-shrink:0}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}

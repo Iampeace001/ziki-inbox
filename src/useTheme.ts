@@ -4,7 +4,7 @@ export type ThemeMode = 'system' | 'light' | 'dark';
 
 export function useTheme() {
   const [mode, setMode] = useState<ThemeMode>(() => {
-    try { const saved = localStorage.getItem('ziki-theme'); return saved === 'light' || saved === 'system' ? saved : 'dark'; } catch { return 'dark'; }
+    try { const saved = localStorage.getItem('ziki-theme'); return saved === 'dark' || saved === 'system' ? saved : 'light'; } catch { return 'light'; }
   });
   const [systemDark, setSystemDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches);
   const theme = mode === 'system' ? (systemDark ? 'dark' : 'light') : mode;

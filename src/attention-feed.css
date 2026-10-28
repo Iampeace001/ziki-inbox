@@ -168,3 +168,37 @@
 .context-footer>div{gap:6px}
 .context-footer button{padding:8px 10px}
 @media(max-width:680px){.context-dialog{width:calc(100vw - 32px);max-width:440px;max-height:80dvh}.context-header{padding:14px 15px 11px}.context-scroll{padding:0 15px}.context-footer .context-request{min-height:28px;padding:4px}}
+
+.context-vote-summary{width:360px;max-width:100%;margin-inline:auto}
+.context-vote-summary .vote-chart-layout{gap:14px}
+.context-vote-summary .vote-chart-legend>div{grid-template-columns:17px 1fr auto 34px;gap:7px}
+@media(max-width:380px){.context-vote-summary .vote-chart-legend>div{grid-template-columns:16px 1fr auto}.context-vote-summary .vote-chart-legend small{grid-column:2/4}}
+
+.context-vote-summary{width:100%;max-width:none;padding:10px 8px 9px}
+.context-vote-summary .vote-totals{margin-bottom:10px;padding-inline:3px}
+.context-vote-summary .vote-balance{height:4px;gap:3px;border-radius:3px}
+.context-vote-summary .vote-balance>span{border-radius:3px}
+@media(max-width:380px){.context-vote-summary{padding:10px 7px 8px}.context-vote-summary .vote-totals small{display:inline}}
+
+.context-vote-summary{background:transparent;border:0;border-radius:0;padding:0;box-shadow:none}
+.context-vote-summary .vote-totals{margin-bottom:8px;padding:0;gap:10px}
+.context-vote-summary .vote-totals>span{font-size:11px;gap:4px}
+.context-vote-summary .vote-totals svg{width:14px;height:14px}
+.context-vote-summary .vote-totals strong{font-size:14px;font-weight:600}
+.context-vote-summary .vote-totals small{font-size:10px}
+.context-vote-summary .vote-balance{height:3px;gap:2px}
+@media(max-width:380px){.context-vote-summary{padding:0}}
+
+/* Consistent, prominent decision actions in the feed and context window. */
+.feed-decision-actions button,.context-footer button{min-height:40px;padding:9px 15px;border-radius:9px;font-size:12px;font-weight:600;gap:7px;transition:background .18s,border-color .18s,box-shadow .18s,transform .18s}
+.feed-decision-actions .feed-approve,.context-footer .context-approve{background:linear-gradient(135deg,#7761f1,#5843d6);color:#fff;border:1px solid #a394ff;box-shadow:0 2px 0 #352678,0 4px 12px #5c43d525}
+.feed-decision-actions .feed-approve:hover,.context-footer .context-approve:hover{background:linear-gradient(135deg,#8b77ff,#6a54ed);border-color:#d3c9ff;box-shadow:0 3px 0 #42318e,0 6px 18px #7955f540;transform:translateY(-1px)}
+.feed-decision-actions .feed-reject,.context-footer .context-reject{background:#37222e;color:#ffb3b6;border:1px solid #92515f;box-shadow:0 2px 0 #20131e}
+.feed-decision-actions .feed-reject:hover,.context-footer .context-reject:hover{background:#532b3b;color:#ffe1e2;border-color:#e08a96;box-shadow:0 3px 0 #301923,0 5px 14px #d54c6820;transform:translateY(-1px)}
+[data-theme="light"] .feed-decision-actions .feed-approve,[data-theme="light"] .context-footer .context-approve{background:linear-gradient(135deg,#7057ea,#543bd0);color:#fff;border-color:#7d63e7;box-shadow:0 2px 0 #38258a,0 4px 12px #6042cf20}
+[data-theme="light"] .feed-decision-actions .feed-approve:hover,[data-theme="light"] .context-footer .context-approve:hover{background:linear-gradient(135deg,#8067f4,#6248dd);border-color:#a58dee;box-shadow:0 3px 0 #46319c,0 6px 18px #6042cf30}
+[data-theme="light"] .feed-decision-actions .feed-reject,[data-theme="light"] .context-footer .context-reject{background:#fff1f1;color:#b53044;border-color:#e2a4ae;box-shadow:0 2px 0 #efd2d7}
+[data-theme="light"] .feed-decision-actions .feed-reject:hover,[data-theme="light"] .context-footer .context-reject:hover{background:#ffe1e5;color:#9a2134;border-color:#cd6f80;box-shadow:0 3px 0 #e8bac4,0 5px 12px #bd3e5714}
+.feed-decision-actions button:focus-visible,.context-footer button:focus-visible{outline:3px solid var(--feed-accent);outline-offset:4px}
+.feed-decision-actions button:active,.context-footer button:active{transform:translateY(1px)}
+@media(max-width:680px){.feed-decision-actions button,.context-footer button{min-height:44px;padding:10px 13px}.context-footer .context-request{min-height:32px;padding:5px 9px}}
