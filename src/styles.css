@@ -152,4 +152,63 @@
 [data-theme="light"] .breadcrumbs .inbox-label{background:#e4edfc;border-color:#b2c9ec;color:#28599f}
 [data-theme="light"] .breadcrumbs .inbox-label>svg{color:#3269bc}
 [data-theme="light"] .breadcrumbs .inbox-label .inbox-attention-count{background:#ccdef8;color:#245294}
+/* Four task cards share one row on laptop and desktop displays. */
+@media(min-width:1100px){
+  main{max-width:1600px;padding:20px 28px}
+  .topbar{height:64px}
+  .topbar-inner{max-width:1600px;padding:0 28px}
+  .inbox-heading{display:flex;align-items:center;gap:26px}
+  .inbox-heading .breadcrumbs{margin:0;flex-shrink:0}
+  .inbox-heading .page-heading{flex:1;min-width:0}
+  .inbox-heading .eyebrow{display:none}
+  .inbox-heading h1{font-size:28px;margin:0}
+  .inbox-heading .page-heading p{font-size:12px;margin-top:5px}
+  .summary-strip{margin:14px 0;padding:10px 0}
+  .view-bar{padding-bottom:16px}
+  .section-heading{margin-bottom:12px}
+  .section-heading h2{font-size:17px}
+  .section-heading p{margin-top:3px}
+  .decision-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:stretch}
+  .decision-card{padding:16px;display:flex;flex-direction:column;border-radius:10px}
+  .decision-card:before{top:17px;height:20px}
+  .decision-card .card-top{margin-bottom:10px;align-items:flex-start;gap:6px}
+  .decision-card .type-label{font-size:11px;gap:5px}
+  .decision-card .type-icon svg{width:13px;height:13px}
+  .decision-card .issue-number{font-size:11px;white-space:nowrap}
+  .decision-card h3{font-size:18px;line-height:1.35;margin-bottom:8px}
+  .decision-card .decision-summary{font-size:15px;line-height:1.5}
+  .decision-card .comparison,.decision-card .estimate{margin-top:12px}
+  .decision-card .comparison summary{min-height:36px;font-size:12px;padding:7px 10px;gap:7px}
+  .decision-card .estimate{font-size:11px;line-height:1.5}
+  .decision-card .your-call{margin-top:14px;padding:11px;min-height:0}
+  .decision-card .your-call>span{font-size:11px;gap:6px}
+  .decision-card .your-call>span svg{width:15px;height:15px}
+  .decision-card .your-call p{font-size:13px;line-height:1.5;margin-top:5px}
+  .decision-card .card-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:auto;padding-top:14px}
+  .decision-card .button{min-height:38px;font-size:12px;padding:8px 10px}
+  .decision-card .comparison-content{grid-template-columns:1fr}
+  .decision-card .comparison-content>svg{transform:rotate(90deg);justify-self:center}
+  .decision-card .comparison-content>p{grid-column:auto}
+  .outcomes-section{margin-top:26px}
+}
+@media(min-width:1100px) and (max-height:800px){
+  main{padding-top:14px}
+  .topbar{height:58px}
+  .inbox-heading h1{font-size:25px}
+  .summary-strip{margin:10px 0;padding:8px 0}
+  .view-bar{padding-bottom:12px}
+  .decision-section>.section-heading p{display:none}
+  .decision-card{padding:14px}
+  .decision-card .decision-summary{font-size:14px;line-height:1.5}
+  .decision-card .card-actions{padding-top:12px;gap:7px}
+}
+.inbox-heading{display:flex;flex-direction:column;align-items:stretch;gap:12px}
+.inbox-heading .breadcrumbs{margin:0;align-self:flex-start}
+.inbox-heading .page-heading{display:block;position:relative;text-align:center;margin:0;padding:0 100px}
+.inbox-heading .page-heading>div{margin:0 auto}
+.inbox-heading .eyebrow{justify-content:center}
+.inbox-heading .page-heading p{max-width:none}
+.inbox-heading .demo-badge{position:absolute;right:0;top:6px}
+@media(max-width:680px){.inbox-heading .page-heading{padding:0}.inbox-heading .page-heading h1{font-size:27px}.inbox-heading .page-heading p{font-size:12px}.inbox-heading .demo-badge{display:none}}
+@media(min-width:1100px) and (max-height:800px){.inbox-heading{gap:8px}.inbox-heading .page-heading h1{font-size:24px}.summary-strip{margin:8px 0}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
