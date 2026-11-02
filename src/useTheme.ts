@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react';
 
 export type ThemeMode = 'system' | 'light' | 'dark';
 
+// Start the redesigned app in dark mode; subsequent theme choices are remembered.
+const themeStorageKey = 'ziki-theme-v2';
+
 export function useTheme() {
   const [mode, setMode] = useState<ThemeMode>(() => {
-    try { const saved = localStorage.getItem('ziki-theme'); return saved === 'dark' || saved === 'system' ? saved : 'light'; } catch { return 'light'; }
+    try { const saved = localStorage.getItem(themeStorageKey); return saved === 'light' || saved === 'system' ? saved : 'dark'; } catch { return 'dark'; }
   });
   const [systemDark, setSystemDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches);
   const theme = mode === 'system' ? (systemDark ? 'dark' : 'light') : mode;
@@ -17,7 +20,7 @@ export function useTheme() {
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#080f20' : '#f4f7fc');
-    try { localStorage.setItem('ziki-theme', mode); } catch { /* Theme still works without storage. */ }
+    try { localStorage.setItem(themeStorageKey, mode); } catch { /* Theme still works without storage. */ }
   }, [mode, theme]);
   return { theme, mode, setMode, toggleTheme: () => setMode(theme === 'dark' ? 'light' : 'dark') };
 }

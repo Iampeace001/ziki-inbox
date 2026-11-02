@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Check, ChevronDown, CircleAlert, MessageSquare, ShieldCheck, ThumbsDown, ThumbsUp, X } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Check, ChevronDown, ChevronRight, CircleAlert, CircleCheck, MessageSquare, Moon, ShieldCheck, ThumbsDown, ThumbsUp, X } from 'lucide-react';
 import ProposalContent from './ProposalContent';
 import type { Decision } from './data';
 import './attention-feed.css';
@@ -7,7 +7,7 @@ import './attention-feed.css';
 type Vote = 1 | -1;
 type Review = { name: string; role: string; vote: Vote; comment: string };
 type VoteFilter = 'all' | 'up' | 'down';
-type Props = { tasks: Decision[]; onDecide: (task: Decision, action: string) => void; onRequestChanges: (task: Decision) => void };
+type Props = { tasks: Decision[]; answered: { task: Decision; action: string }[]; onDecide: (task: Decision, action: string) => void; onRequestChanges: (task: Decision) => void };
 
 const agents = { Product: 'Ember', Marketing: 'Quill', Security: 'Rook' };
 const sampleComments: Record<number, string[]> = {
@@ -29,7 +29,11 @@ function readVotes(): Record<number, Vote> {
   } catch { return {}; }
 }
 
-export default function AttentionFeed({ tasks, onDecide, onRequestChanges }: Props) {
+function AgentAvatar({ name, sleeping = false }: { name: string; sleeping?: boolean }) {
+  return <span className={`agent-face ${sleeping ? 'is-sleeping' : 'is-awake'}`} role="img" aria-label={`${name} — ${sleeping ? 'resting after your response' : 'awaiting your decision'}`}><span className="agent-antenna"/><span className="agent-face-screen"><span className="agent-eye"/><span className="agent-eye"/></span>{sleeping && <span className="agent-sleep-mark" aria-hidden="true">z</span>}</span>;
+}
+
+export default function AttentionFeed({ tasks, answered, onDecide, onRequestChanges }: Props) {
   const [selected, setSelected] = useState<Decision | null>(null);
   const [filter, setFilter] = useState<VoteFilter>('all');
   const [votes, setVotes] = useState<Record<number, Vote>>(readVotes);
@@ -49,22 +53,24 @@ export default function AttentionFeed({ tasks, onDecide, onRequestChanges }: Pro
 
   return <>
     <div className="attention-feed">
-      <div className="feed-intro"><span><MessageSquare size={16}/> Decisions from your agents</span><span>Illustrative agent feedback</span></div>
+      <div className="feed-intro"><span><MessageSquare size={16}/> Decisions from your agents</span><span>Demo feedback · agent states follow your responses</span></div>
+      {!tasks.length && <div className="feed-all-answered"><CircleCheck size={20}/><span>All caught up. Your agents are resting.</span></div>}
       {tasks.map(task => {
-        return <article className="attention-row" key={task.id}>
-          <CircleAlert className="feed-attention-icon" size={21} aria-hidden="true"/>
+        const finding = task.id === 2 || task.id === 148;
+        const count = counts(task);
+        return <article className={`attention-row ${finding ? 'is-finding' : 'is-recommendation'}`} key={task.id}>
           <div className="attention-row-content">
-            <div className="feed-task-category">{task.section} <span>·</span> #{task.id}</div>
-            <h3><span>Needs you.</span> {task.title}</h3>
-            <p className="feed-task-summary">{task.summary}</p>
-            <button className="read-context" type="button" onClick={() => openContext(task)}><MessageSquare size={15} aria-hidden="true"/>Read context <ChevronDown size={15} aria-hidden="true"/></button>
+            <div className="feed-task-category"><span className="feed-task-id">#{task.id}</span> <span>·</span> {task.section}</div>
+            <h3>{finding ? <AlertTriangle className="feed-inline-status" size={20} aria-hidden="true"/> : <CircleCheck className="feed-inline-status" size={20} aria-hidden="true"/>}<span>{finding ? 'Gotcha.' : 'Do.'}</span> {task.summary}</h3>
             <div className="feed-row-footer">
-              <div className="feed-author"><span className={`agent-initials ${task.section.toLowerCase()}`}>{agents[task.section].slice(0,2).toUpperCase()}</span><span>{agents[task.section]}</span><span className="feed-author-role">{task.section} agent</span></div>
+              <div className="feed-author"><AgentAvatar name={agents[task.section]}/><span>{agents[task.section]}</span><span className="feed-author-dot" aria-hidden="true">·</span></div>
+              <div className="feed-review-pill" role="group" aria-label={`Sample votes for issue ${task.id}`}><button type="button" className="vote-up" aria-label={`Upvote ${task.title}`} aria-pressed={votes[task.id] === 1} onClick={() => vote(task,1)}><ThumbsUp size={16}/>{count.up}</button><button type="button" className="vote-down" aria-label={`Downvote ${task.title}`} aria-pressed={votes[task.id] === -1} onClick={() => vote(task,-1)}><ThumbsDown size={16}/>{count.down}</button><span className="review-pill-divider"/><button type="button" className="see-why" onClick={() => openContext(task)}><MessageSquare size={15}/>Read context<ChevronRight size={14}/></button></div>
               <div className="feed-decision-actions"><button type="button" className="feed-approve" onClick={() => decide(task, task.primary)}><Check size={16}/>{task.primary}</button><button type="button" className="feed-reject" onClick={() => decide(task, 'Rejected')}><X size={16}/>Reject</button></div>
             </div>
           </div>
         </article>;
       })}
+      {answered.length > 0 && <section className="answered-agents" aria-label="Recently answered"><div className="answered-agents-heading"><Moon size={14}/>Recently answered</div>{answered.slice(-3).reverse().map(({task,action}) => <div className="answered-agent-row" key={task.id}><AgentAvatar name={agents[task.section]} sleeping/><div><span>{task.title}</span><small>{action} · {agents[task.section]} is resting</small></div><Check size={16} aria-hidden="true"/></div>)}</section>}
     </div>
     <dialog className="context-dialog" ref={context} aria-labelledby="context-title" onCancel={event => { event.preventDefault(); closeContext(); }} onClick={event => { if (event.target === event.currentTarget) closeContext(); }}>
       {selected && <>
